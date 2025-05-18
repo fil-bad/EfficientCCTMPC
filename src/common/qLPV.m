@@ -9,7 +9,6 @@ classdef qLPV < handle
         W_dist  % Disturbance set
         X       % State constraints 
         U       % Input constraints
-        
     end
 
     properties (Access = private)
@@ -17,8 +16,8 @@ classdef qLPV < handle
     end
 
     properties(Dependent)
-        nx, nu, ny  % state input and output dimensions
-        nm          % #vertices of convex hull (models)
+        nx, nu  % state input dimensions
+        nm      % #vertices of convex hull (models)
     end
 
     methods % GETTER methods
@@ -44,9 +43,17 @@ classdef qLPV < handle
             obj.X = X;
             obj.U = U;
 
-            if nargin == 6 % Pick one model among all (works also for LTI)
-                obj.A_curr_han = @(A_hull,~,~) A_hull{randi([1,numel(A_hull)])};
-                obj.B_curr_han = @(B_hull,~,~) B_hull{randi([1,numel(B_hull)])};
+            if nargin == 6 % Pick one random model among all (works also for LTI)
+                % obj.A_curr_han = @(A_hull,~,~) A_hull{randi([1,numel(A_hull)])};
+                % obj.B_curr_han = @(B_hull,~,~) B_hull{randi([1,numel(B_hull)])};
+
+                % Define a helper to normalize a vector.
+                normWeights = @(w) w / sum(w);
+
+                % get a convexhull of the models
+                obj.A_curr_han = @(A_hull,~,~) sum(cat(3, A_hull{:}).*normWeights(rand(1,1,obj.nm)),3);
+                obj.B_curr_han = @(B_hull,~,~) sum(cat(3, B_hull{:}).*normWeights(rand(1,1,obj.nm)),3);
+                
             elseif nargin == 8
                 obj.A_curr_han = A_curr_han; %{A_convh, x_curr, ext_params}
                 obj.B_curr_han = B_curr_han; %{B_convh, u_curr, ext_params}
