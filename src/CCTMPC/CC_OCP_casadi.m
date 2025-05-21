@@ -65,8 +65,6 @@ classdef CC_OCP_casadi < handle
         function feasRegion = computeFeasRegion(obj, n_facets)
             % compute a feasible region given by n_facets directions.
             if isscalar(n_facets)
-                % verts = polyGenEulerAngles(obj.sys.nx, n_facets);
-                % H_feas = Polyhedron(verts,ones(size(verts,1),1)).minHRep().A;
                 % uniformly sampling (nx-1)-unit sphere for directions
                 H_feas = numericalSpherePoints(obj.sys.nx, n_facets);
             else % passing already a template matrix
@@ -79,7 +77,6 @@ classdef CC_OCP_casadi < handle
                 'thread',feature('numcores'));
             [~,h_feas] = parSupportFun(H_feas');
             
-
             % for i=1:size(H_feas,1)
             %     x0_max = full(obj.implicitSupportFun(H_feas(i,:)'));
             %     h_feas(i) = H_feas(i,:)*x0_max;
@@ -199,14 +196,7 @@ classdef CC_OCP_casadi < handle
             opti.subject_to(obj.constrSetS(y(:,obj.N), u{obj.N}, obj.ys+obj.gamma*(y(:,obj.N)-obj.ys)))
 
             % Set solver options. NOTE: we need to handle semidefinite cost
-            % if numel(obj.csd_opts) == 3 && strcmp(obj.csd_opts{1},'daqp')
-            %     obj.csd_opts{3}.('eps_prox') = 1e-5;
-            %     obj.csd_opts{3}.('eta_prox') = 1e-6;
-            %     opti.solver(obj.csd_opts{:})
-            % else
-            %     % opti.solver('daqp',struct(),struct('eps_prox',1e-3))
-            %     % avoiding error on suboptimal solutions
-            % end
+            % opti.solver('daqp',struct(),struct('eps_prox',1e-3))
             opti.solver('gurobi',struct(),struct('outputflag',0))
 
 
@@ -274,14 +264,7 @@ classdef CC_OCP_casadi < handle
             opti.subject_to(obj.constrSetS(y(:,obj.N), u{obj.N}, obj.ys+obj.gamma*(y(:,obj.N)-obj.ys)))
 
             % Set solver options. NOTE: we need to handle semidefinite cost
-            % if numel(obj.csd_opts) == 3 && strcmp(obj.csd_opts{1},'daqp')
-            %     obj.csd_opts{3}.('eps_prox') = 1e-3;
-            %     obj.csd_opts{3}.('eta_prox') = 1e-8;
-            %     opti.solver(obj.csd_opts{:})
-            % else
-            %     % opti.solver('daqp',struct(),struct('eps_prox',1e-3))
-            %     % avoiding error on suboptimal solutions
-            % end
+            % opti.solver('daqp',struct(),struct('eps_prox',1e-3))
             opti.solver('gurobi',struct(),struct('outputflag',0))
 
 

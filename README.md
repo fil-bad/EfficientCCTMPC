@@ -43,7 +43,7 @@ If you find this package useful, please consider starring this repository as a t
 
 If our work has contributed to your research, we kindly ask that you cite our paper:
 
-### <a id="1">[1]</a> CCTMPC for Tracking
+### <a id="1">[1]</a> arXiv paper
 
 ```latex
 

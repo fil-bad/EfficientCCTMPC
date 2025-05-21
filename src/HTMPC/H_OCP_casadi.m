@@ -74,8 +74,6 @@ classdef H_OCP_casadi < handle
         function feasRegion = computeFeasRegion(obj, n_facets)
             % compute a feasible region given by n_facets directions.
             if isscalar(n_facets)
-                % verts = polyGenEulerAngles(obj.sys.nx, n_facets);
-                % H_feas = Polyhedron(verts,ones(size(verts,1),1)).minHRep().A;
                 % uniformly sampling (nx-1)-unit sphere for directions
                 H_feas = numericalSpherePoints(obj.sys.nx, n_facets);
             else % passing already a template matrix
@@ -194,15 +192,7 @@ classdef H_OCP_casadi < handle
                 z(:,obj.N),alpha(obj.N), v(:,obj.N), obj.gamma*z(:,obj.N),obj.gamma*(alpha(obj.N)-1)+1))
 
             % Set solver options. NOTE: we need to handle semidefinite cost
-            % if numel(obj.csd_opts) == 3 && strcmp(obj.csd_opts{1},'daqp')
-            %     obj.csd_opts{3}.('eps_prox') = 1e-3;
-            %     obj.csd_opts{3}.('eta_prox') = 1e-8;
-            %     opti.solver(obj.csd_opts{:})
-            % else
-            %     % opti.solver('daqp',struct(),struct('eps_prox',1e-3))
-            %     % avoiding error on suboptimal solutions
-            %     opti.solver('gurobi',struct('error_on_fail',false),struct('outputflag',0))
-            % end
+            % opti.solver('daqp',struct(),struct('eps_prox',1e-3))
             opti.solver('gurobi',struct(),struct('outputflag',0))
 
             % Convert the fixed structure into a CasADi function.
@@ -267,15 +257,7 @@ classdef H_OCP_casadi < handle
                 z(:,obj.N),alpha(obj.N), v(:,obj.N), obj.gamma*z(:,obj.N),obj.gamma*(alpha(obj.N)-1)+1))
 
             % Set solver options. NOTE: we need to handle semidefinite cost
-            % if numel(obj.csd_opts) == 3 && strcmp(obj.csd_opts{1},'daqp')
-            %     obj.csd_opts{3}.('eps_prox') = 1e-3;
-            %     obj.csd_opts{3}.('eta_prox') = 1e-8;
-            %     opti.solver(obj.csd_opts{:})
-            % else
-            %     % opti.solver('daqp',struct(),struct('eps_prox',1e-3))
-            %     % avoiding error on suboptimal solutions
-            %     opti.solver('gurobi',struct('error_on_fail',false),struct('outputflag',0))
-            % end
+            % opti.solver('daqp',struct(),struct('eps_prox',1e-3))
             opti.solver('gurobi',struct(),struct('outputflag',0))
 
 
@@ -334,17 +316,16 @@ classdef H_OCP_casadi < handle
 
 
         function precomputeSupportFun(obj)
-            % use MPT3 methods
             % state and input constraints
             HX = obj.sys.X.A; HU = obj.sys.U.A;
-            % TODO: improve the initial point selection!
-            obj.hx_m = HX*obj.sys.X.chebyCenter.x;
-            obj.hu_m = HU*obj.sys.U.chebyCenter.x;
+            obj.hx_m = zeros(size(obj.sys.X.A,1),obj.ccPoly.v);
+            obj.hu_m = zeros(size(obj.sys.U.A,1),obj.ccPoly.v);
 
             for j=1:obj.ccPoly.v
-                obj.hx_m = max(obj.hx_m, HX*obj.ccPoly.Vi_s{j}*obj.ys);
-                obj.hu_m = max(obj.hu_m, HU*obj.us(:,j));
+                obj.hx_m(:,j) = HX*obj.ccPoly.Vi_s{j}*obj.ys;
+                obj.hu_m(:,j) = HU*obj.us(:,j);
             end
+            obj.hx_m = max(obj.hx_m,[],2); obj.hu_m = max(obj.hu_m,[],2);
         end
 
         function constr = constrSetS(obj, y, u, yp)

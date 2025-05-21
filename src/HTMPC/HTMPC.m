@@ -99,17 +99,19 @@ classdef HTMPC < handle
                 OuterSet = obj.OCP.sys.X;
             end
             % normalize directions
-            c_dirs = OuterSet.V; c_dirs = (c_dirs./vecnorm(c_dirs,2,2))';  
+            c_dirs = [OuterSet.V; OuterSet.A]; 
+            c_dirs = (c_dirs./vecnorm(c_dirs,2,2))';  
             n_dirs = size(c_dirs,2);
             % initialize csdFun.map()
             parHausFun = obj.OCP.implicitSupportFun.map(n_dirs,'thread',feature('numcores'));
             
             [x0_s,supp_MPC] = parHausFun(c_dirs);
-            x0_s = full(x0_s); supp_MPC = full(supp_MPC); 
+            x0_s = full(x0_s); supp_MPC = full(supp_MPC)'; 
             
             obj.convh_x0s = x0_s;
 
-            supp_Outer = max(c_dirs'*OuterSet.V',[],2)';
+            % being a convex polytope, the max will be at one vertex or an edge
+            supp_Outer = [max(c_dirs'*OuterSet.V',[],2)];
 
             hausD = max(supp_Outer-supp_MPC);
             if nargin < 2

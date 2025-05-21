@@ -54,8 +54,8 @@ plot3(x_t_pos(1,:),x_t_pos(2,:),x_t_pos(3,:),'black','LineWidth',1.2)
 hold on
 scatter3(x_t_pos(1,2:end),x_t_pos(2,2:end),x_t_pos(3,2:end),10,'ko','filled')
 hold on
-scatter3(x_t_pos(1,1),x_t_pos(2,1),x_t_pos(3,1),15,'ro','filled')
-view(2,12)
+scatter3(x_t_pos(1,1),x_t_pos(2,1),x_t_pos(3,1),20,'ro','filled')
+view(-4,8)
 
 % text(x(1,1)+0.2,x(2,1)+0.1,x(3,1)-0.1,'$x_0$','Interpreter','latex')
 

@@ -103,9 +103,9 @@ classdef CCPolytope
         end
 
         function F = computeRCITemplate(obj, F_hat, templOpts)
-            % from [EfficientpolyhedronCCTMPC paper, Section IV-B]: solve an NLP to
+            % from [EfficientCCTMPC paper, Section IV-B]: solve an NLP to
             % find a linear (invertible) transformation of F_hat, so that
-            % F = F_hat*W_inv is such that Fx<=1 defines a RCI set.
+            % F = F_hat*T_inv is such that Fx<=1 defines a RCI set.
 
             nx = obj.sys.nx; nu = obj.sys.nu;
             HW = obj.sys.W_dist.A; hW = obj.sys.W_dist.b; f_W = size(hW,1);

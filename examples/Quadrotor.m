@@ -209,13 +209,14 @@ x0_space = new_htmpc.convh_x0s(1:3,:);
 
 [~,ind] = maxk(vecnorm(x0_space),5);
 % or look at the plot
-figure; plot(1:box_ccPoly.v,x0_space); xlim([1,box_ccPoly.v])
+%%
+figure; plot(1:box_ccPoly.v+box_ccPoly.f,x0_space); xlim([1,box_ccPoly.v+box_ccPoly.f])
 %%
 N_mpc = 5*box_N_ocp+1; % simulation steps
 
 % (state space) system dynamics
 x_sys = zeros(nx, N_mpc+1);
-x_sys(:,1) = (1-1e-6)*new_htmpc.convh_x0s(:,ind(1));
+x_sys(:,1) = (1-1e-5)*new_htmpc.convh_x0s(:,572);
 disp(x_sys(1:3,1)')
 
 u_sys = zeros(nu, N_mpc);
