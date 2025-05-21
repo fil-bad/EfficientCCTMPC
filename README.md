@@ -46,5 +46,13 @@ If our work has contributed to your research, we kindly ask that you cite our pa
 ### <a id="1">[1]</a> arXiv paper
 
 ```latex
-
+@misc{badalamenti2025efficientconfigurationconstrainedtubempc,
+      title={Efficient Configuration-Constrained Tube MPC via Variables Restriction and Template Selection}, 
+      author={Filippo Badalamenti and Sampath Kumar Mulagaleti and Mario Eduardo Villanueva and Boris Houska and Alberto Bemporad},
+      year={2025},
+      eprint={2505.14440},
+      archivePrefix={arXiv},
+      primaryClass={eess.SY},
+      url={https://arxiv.org/abs/2505.14440}, 
+}
 ```
